@@ -16,11 +16,40 @@ const List<Color> iconBg = [
   Color(0xFFE6F4E6),
 ];
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   static const blue = Color(0xFF6C9EEF);
   static const navy = Color(0xFF1F2A5C);
+
+  int _selected = 0;
+
+  void _msg(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(text), duration: const Duration(seconds: 2)),
+      );
+  }
+
+  Widget _drawerItem(int index, IconData icon, String label) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(label),
+      selected: _selected == index,
+      selectedTileColor: const Color(0xFFE8EFFD),
+      onTap: () {
+        setState(() => _selected = index);
+        Navigator.pop(context);
+        _msg(label);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,20 +63,23 @@ class HomePage extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
         ),
         actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
           IconButton(
-              icon: const Icon(Icons.notifications_none), onPressed: () {}),
+            icon: const Icon(Icons.search),
+            onPressed: () => _msg('Rechercher un menu'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.notifications_none),
+            onPressed: () => _msg('Aucune notification'),
+          ),
         ],
       ),
       drawer: Drawer(
         child: SafeArea(
           child: ListView(
-            children: const [
-              ListTile(leading: Icon(Icons.home), title: Text('Accueil')),
-              ListTile(
-                  leading: Icon(Icons.restaurant_menu), title: Text('Menus')),
-              ListTile(
-                  leading: Icon(Icons.info_outline), title: Text('À propos')),
+            children: [
+              _drawerItem(0, Icons.home, 'Accueil'),
+              _drawerItem(1, Icons.restaurant_menu, 'Menus'),
+              _drawerItem(2, Icons.info_outline, 'À propos'),
             ],
           ),
         ),
@@ -56,7 +88,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: blue,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),
-        onPressed: () {},
+        onPressed: () => _msg('Ajouter un menu'),
         child: const Icon(Icons.add, size: 32),
       ),
       body: Padding(
@@ -121,6 +153,7 @@ class HomePage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),
                     child: ListTile(
+                      onTap: () => _msg(m['titre']),
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
                       leading: Container(
