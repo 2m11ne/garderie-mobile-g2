@@ -1,4 +1,3 @@
-# garderie-mobile-g2
 # Ma Garderie 🧸
 
 Application mobile Flutter de gestion des menus d'une garderie d'enfants.
